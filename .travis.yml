@@ -5,6 +5,8 @@ env:
   global:
     - USER=yhnw
     - REPO=php-debug
+    - secure: "Ut3LZn9iCglkiva6/WRyOhAMBb41QNSoSQwfvwDrVo38RF55N8NIi70t1CYbA4Hu9sFPZIdEhnbPPZTYqS5Brt+xjtNtMjiGjtQzGopIjCaR3z7OMFbsggtSIJILm493HOWEkG2hnk0jKCzExWPQyqsk/EOxQywrROh8HxpVdlKbpPXhuWfP3cNT3uDMm3zlObA2PqQT1PPVRdfUM3ewYL+VovmDBXjGZWPmipOiwfRuZXnSvlhKVj81vMIPJdwqip5XxKdUc9j7H8Ir2ge+H9igIWyL9dmLoBbl4A9U6FCc1K0DlSJdd/RfqY54HhfH2y1UbRT6W4GTWlH4g3JSQEReG9yUvOwXd0jPj4Ub/gM3re9537DyLbsi6hHVShcvD4htz7/V34Oj2UM22YR52cDuKWjaqGfIB9RmWpo+TJRQV7LdE+HBso7CsB8dN5/B+meDrQ+h4IfbIkfzivx0LGOdDYCLNVqFsSfJDgXpXaO8ElmyD7gNLsk9C3IoMOkexYJ0TlfMAYgoEfsbSMQZuADvhMu4Uo7vzu7XHXQgog2pp3vWhPLEaYOtZ0t8gWXE7bMrTHsCPw+quorcChMIgm1AFOJNsCYVMoWX4wyKMUO/ZAuMhOZ7cTgKCZMaD5Ivg9LsCrHiKThgR42PEuSYN3wFHFdrmmg0QQIBfBH7m6g="
+
   matrix:
     - VERSION=7.1 VARIANT=
 
@@ -14,7 +16,8 @@ install:
 before_script:
   - env | sort
   - cd "$VERSION"
-  - image="${USER}/${REPO}:${VERSION}${VARIANT:+-$VARIANT}"
+  - image="${REPO}:${VERSION}${VARIANT:+-$VARIANT}"
+  - image="${image//'/'/-}"
 
 script:
   - docker build -t "$image" "${VARIANT:-.}"
@@ -22,5 +25,10 @@ script:
 
 after_script:
   - docker images
+  - docker tag ${image} ${USER}/${image}
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker login -u=${USER} -p=${DOCKER_PASSWORD} &&
+      docker push ${USER}/${image} ;
+    fi
 
 # vim:set et ts=2 sw=2:
