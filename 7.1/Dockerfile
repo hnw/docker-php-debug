@@ -39,9 +39,9 @@ RUN mkdir -p $PHP_INI_DIR/conf.d
 # Enable linker optimization (this sorts the hash buckets to improve cache locality, and is non-default)
 # Adds GNU HASH segments to generated executables (this is used if present, and is much faster than sysv hash; in this configuration, sysv hash is also generated)
 # https://github.com/docker-library/php/issues/272
-ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2"
+ENV PHP_CFLAGS="-O0 -g"
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
-ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
+ENV PHP_LDFLAGS=""
 
 ENV GPG_KEYS A917B1ECDA84AEC2B568FED6F50ABC807BD5DCD0
 
@@ -125,7 +125,6 @@ RUN set -xe \
 	&& make -j "$(nproc)" \
 	&& make install \
 	&& cp .gdbinit ~root/  \
-	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
 	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
