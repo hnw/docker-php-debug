@@ -15,7 +15,6 @@ before_script:
   - env | sort
   - cd "$VERSION"
   - image="${USER}/${REPO}:${VERSION}${VARIANT:+-$VARIANT}"
-  - image="${image//'/'/-}"
 
 script:
   - docker build -t "$image" "${VARIANT:-.}"
