@@ -124,7 +124,7 @@ RUN set -xe \
 		$PHP_EXTRA_CONFIGURE_ARGS \
 	&& make -j "$(nproc)" \
 	&& make install \
-	&& cp .gdbinit ~root/  \
+	&& cp .gdbinit ~root/ \
 	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 

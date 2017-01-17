@@ -1,4 +1,19 @@
 #!/bin/bash
+
+shopt -s expand_aliases
+
+declare -A ALIASES=(
+    [gsort]='sort'
+    [gsed]='sed'
+    [greadlink]='readlink'
+)
+for alias in "${!ALIASES[@]}"; do
+    $alias --version >/dev/null 2>&1
+    if [ "$?" -eq "0" ]; then
+        alias ${ALIASES[$alias]}=$alias
+    fi
+done
+
 set -e
 
 declare -A gpgKeys=(
